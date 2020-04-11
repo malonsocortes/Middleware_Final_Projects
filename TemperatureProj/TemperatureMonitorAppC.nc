@@ -1,3 +1,11 @@
+/**
+* Configuration file. Wires the TenperatureMonitorC component to other
+* TinyOS components.
+*
+* @author Marina Alonso-Cortes
+* @author Saul Almazan
+* @author Jorge Santisteban
+*/
 #include "TemperatureMonitor.h"
 #include <message.h>
 
@@ -5,27 +13,30 @@ configuration TemperatureMonitorAppC {
 }
 implementation {
 
+  components TemperatureMonitorC as App;
   components MainC;
   components new TimerMilliC() as TimerSink;
   components new TimerMilliC() as TimerSensor;
-
-  components ActiveMessageC, new LplAMSenderC(AM_WEATHER_MONITOR), new AMReceiverC(AM_WEATHER_MONITOR);
-  components new DemoSensorC() as TSensor;
-  components new RandomC;
-
-  //components PrintfC, SerialStartC;
-  components TemperatureMonitorC as App;
 
   App.Boot -> MainC;
   App.Timer0 -> TimerSink;
   App.TimerN -> TimerSensor;
 
-  App.AMSend -> LplAMSenderC;
+  components new AMSenderC(AM_WEATHER_MONITOR);
+  App.Packet -> AMSenderC;
+  App.AMPacket -> AMSenderC;
+  App.AMSend -> AMSenderC;
+
+  components new AMReceiverC(AM_WEATHER_MONITOR);
   App.Receive -> AMReceiverC;
-  App.Packet -> LplAMSenderC;
-  App.AMPacket -> LplAMSenderC;
+
+  components new TemperatureSensorC() as TSensor;
+  App.Temperature -> TSensor;
+
+  components ActiveMessageC;
   App.AMControl -> ActiveMessageC;
 
-  App.Temperature -> TSensor;
-  App.Random -> Random;
+  components new RandomC;
+  App.Random -> RandomC;
+
 }
