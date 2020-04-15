@@ -1,0 +1,5 @@
+COMPONENT=TemperatureMonitorAppC
+
+CFLAGS += -DCC2420_DEF_RFPOWER=2
+
+include $(MAKERULES)

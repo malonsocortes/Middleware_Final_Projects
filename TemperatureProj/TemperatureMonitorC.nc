@@ -32,20 +32,19 @@ module TemperatureMonitorC {
     interface Random;                         /* Generates random threshold */
   }
 }
+implementation {
 
-implementation {
+  uint16_t threshold;
+  uint16_t temperature;
+  uint16_t counter;
 
-  uint16_t    threshold,
-  uint16_t    temperature;
-  uint16_t    counter;
+  bool busy = FALSE;
 
-  bool        busy = FALSE;
-
-  message_t   pkt;
+  message_t pkt;
   setup_msg_t setup_pkt;
-  data_msg_t  data_pkt;
+  data_msg_t data_pkt;
 
-  am_addr_t   prev_node = 0;
+  am_addr_t prev_node = 0;
 
 
   task void sendSETUP() {
@@ -103,7 +102,7 @@ implementation {
 
       dbg("nodes", "%s | Node %d | Temperature above threshold. Must inform Sink\n", sim_time_string(), TOS_NODE_ID);
 
-      msg = (data_msg_t *) (call Packet.getPayload(&pkt), sizeof(data_msg_t));
+      msg = (data_msg_t *) (call Packet.getPayload(&pkt, sizeof(data_msg_t)));
       if( msg == NULL) return;
       msg->node_id = TOS_NODE_ID;
       msg->msg_id = counter;
@@ -125,7 +124,7 @@ implementation {
 
     dbg("nodes", "%s | Node %d | Must forward DATA\n", sim_time_string(), TOS_NODE_ID);
 
-    msg = (data_msg_t *) (call Packet.getPayload(&pkt), sizeof(data_msg_t));
+    msg = (data_msg_t *) (call Packet.getPayload(&pkt, sizeof(data_msg_t)));
     if( msg == NULL) return;
     msg->node_id = data_pkt.node_id;
     msg->msg_id = data_pkt.msg_id;
@@ -191,7 +190,7 @@ implementation {
   //*************************** Timers **************************//
   event void TimerSink.fired() {
     /* Calculate new threshold */
-    threshold = (call Random.rand16 % 40) + 30 /* Temperatures from 30 to 70 ºC */
+    threshold = (call Random.rand16() % 40) + 30; /* Temperatures from 30 to 70 ºC */
     dbg("nodes", "%s | Node 0 | New threshold %d.\n", sim_time_string(), TOS_NODE_ID, threshold);
     post sendSETUP();
   }
@@ -213,10 +212,10 @@ implementation {
   }
 
   //*************************** Receive Interface **************************//
-  event message_t Receive.receive(message_t * msg, void * payload, uint8_t len) {
+  event message_t * Receive.receive(message_t * msg, void * payload, uint8_t len) {
 
-    setup_msg_t setup;
-    data_msg_t data;
+    setup_msg_t * setup;
+    data_msg_t * data;
 
     am_addr_t source_node;
     am_addr_t dest_node;
@@ -228,9 +227,9 @@ implementation {
 
       if (len == sizeof (data_msg_t)) {
 
-        data = (data_msg_t *) payload;
+        data = (data_msg_t*) payload;
         dbg("radio","%s | Node 0 | Received DATA (ID = %d): sender = ID%d, origin = ID%d, temp = %d > threshold\n",
-        sim_time_string(), data->msg_id, source_node, data->node_id, dat->temperature)
+        sim_time_string(), data->msg_id, source_node, data->node_id, data->temperature);
       }
     }
     else {
@@ -253,7 +252,9 @@ implementation {
         dbg("radio", "%s | Node %d | Received DATA (ID = %d): sender = ID%d, origin = ID%d, forwardto = ID%d\n",
         sim_time_string(), TOS_NODE_ID, data->msg_id, source_node, data->node_id, prev_node);
         data_pkt = *data;
-        post forwardDATA();
+        if(dest_node == TOS_NODE_ID){
+          post forwardDATA();
+        }
       }
     }
     return msg;

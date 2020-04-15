@@ -12,9 +12,9 @@ generic configuration TemperatureSensorC(){
   provides interface Read<uint16_t>;
 
 }
-implementation {
+implementation {
 
-  components new TemperatureSensorP()
+  components new TemperatureSensorP();
   Read = TemperatureSensorP;
 
   components MainC, RandomC;

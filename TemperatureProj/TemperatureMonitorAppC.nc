@@ -19,15 +19,15 @@ implementation {
   components new TimerMilliC() as TimerSensor;
 
   App.Boot -> MainC;
-  App.Timer0 -> TimerSink;
-  App.TimerN -> TimerSensor;
+  App.TimerSink -> TimerSink;
+  App.TimerSensor -> TimerSensor;
 
-  components new AMSenderC(AM_WEATHER_MONITOR);
+  components new AMSenderC(AM_TEMPERATURE_MONITOR);
   App.Packet -> AMSenderC;
   App.AMPacket -> AMSenderC;
   App.AMSend -> AMSenderC;
 
-  components new AMReceiverC(AM_WEATHER_MONITOR);
+  components new AMReceiverC(AM_TEMPERATURE_MONITOR);
   App.Receive -> AMReceiverC;
 
   components new TemperatureSensorC() as TSensor;
@@ -36,7 +36,7 @@ implementation {
   components ActiveMessageC;
   App.AMControl -> ActiveMessageC;
 
-  components new RandomC;
+  components RandomC;
   App.Random -> RandomC;
 
 }
