@@ -17,10 +17,12 @@ implementation {
   components MainC;
   components new TimerMilliC() as TimerSink;
   components new TimerMilliC() as TimerSensor;
+  components new TimerMilliC() as WaitingTimer;
 
   App.Boot -> MainC;
   App.TimerSink -> TimerSink;
   App.TimerSensor -> TimerSensor;
+  App.WaitingTimer -> WaitingTimer;
 
   components new AMSenderC(AM_TEMPERATURE_MONITOR);
   App.Packet -> AMSenderC;

@@ -1,0 +1,20 @@
+- threshold that is created is always very low, near the minimum which is 30. The
+max temp is 70. Ideally, the threshold should be closer to 70.
+threshold calculated: threshold = (call Random.rand16() % 40) + 30;
+Measured temperature: temperature = (call Random.rand16()%70);
+
+
+- Infinite loops in flooding protocol. What is happening is that whenever a Sensor
+receives the newest SETUP message, the first time it saves info, and later it
+always forwards it on BROADCAST. Even though the original SETUP messages are Sent
+by the Node 0 approximately each 300 ms, then once the nodes receive it they start
+forwarding it super fast, almost instantly, so the net traffic is basically
+almost only setup messages. We will need to put timers on Nodes so that they do
+not forward instantly. And the time of waiting to forward should be different for
+each node so that they don't forward at the same times.
+
+
+- SOLVED: Same length for SETUP and DATA messages, the Node 0 was receiving forwarded SETUP
+messages and analising them as if they were DATA. Solved making the message_id of
+DATA messages a uint8_t instead of uint16_t.
+s

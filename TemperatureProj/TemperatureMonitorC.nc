@@ -8,8 +8,6 @@
 #include "TemperatureMonitor.h"
 #include "Timer.h" /* To use TMilli */
 
-#include <printf.h>
-#define PRINTF(...) printf(__VA_ARGS__); printfflush()
 
 
 module TemperatureMonitorC {
@@ -28,6 +26,7 @@ module TemperatureMonitorC {
 
     interface Timer<TMilli> as TimerSink;     /* Period to send SETUP msg */
     interface Timer<TMilli> as TimerSensor;   /* Period to meassure Data */
+    interface Timer<TMilli> as WaitingTimer;   /* Makes sensors wait before forwarding SETUP msg*/
 
     interface Random;                         /* Generates random threshold */
   }
@@ -36,7 +35,11 @@ implementation {
 
   uint16_t threshold;
   uint16_t temperature;
+  uint16_t maxTemp = 0;
   uint16_t counter;
+  uint8_t dataCounter;
+  uint16_t sentCounter;
+  uint16_t measurements;
 
   bool busy = FALSE;
 
@@ -98,14 +101,15 @@ implementation {
     if(TOS_NODE_ID != 0) {
 
       if(busy) return;
-      counter ++;
+      dataCounter ++;
 
-      dbg("nodes", "%s | Node %d | Temperature above threshold. Must inform Sink\n", sim_time_string(), TOS_NODE_ID);
+      dbg("nodes", "%s | Node %d | Temperature above threshold (%d > %d). Must inform Sink\n",
+       sim_time_string(), TOS_NODE_ID, temperature, threshold);
 
       msg = (data_msg_t *) (call Packet.getPayload(&pkt, sizeof(data_msg_t)));
       if( msg == NULL) return;
       msg->node_id = TOS_NODE_ID;
-      msg->msg_id = counter;
+      msg->msg_id = dataCounter;
       msg->temperature = temperature;
 
       if(call AMSend.send(prev_node, &pkt, sizeof(data_msg_t)) == SUCCESS) {
@@ -139,6 +143,7 @@ implementation {
 
   event void AMSend.sendDone(message_t* msg, error_t err) {
     if (&pkt==msg && err == SUCCESS) {
+      sentCounter++;
       busy = FALSE;
     }
   }
@@ -146,11 +151,13 @@ implementation {
   //***************************** Boot Interface *****************************//
   event void Boot.booted() {
     /* Initialization of variables */
-    threshold = MAX_THRESHOLD;
+    threshold = MAX_TEMP;
     temperature = 0;
     busy = FALSE;
     counter = 0;
-
+    dataCounter = 0;
+    sentCounter = 0;
+    measurements = 0;
     dbg("nodes", "%s | Node %d | Booted.\n", sim_time_string(), TOS_NODE_ID);
     call AMControl.start();
   }
@@ -160,8 +167,7 @@ implementation {
 
     if (err == SUCCESS) {
 
-      dbg("radio", "Radio on.\n");
-      dbg("nodes", "%s | Node %d | Radio started\n", sim_time_string(), TOS_NODE_ID);
+      dbg("nodes", "%s | Node %d | Radio started\n", sim_time_string(), TOS_NODE_ID);
 
       if(TOS_NODE_ID == 0) {
         call TimerSink.startPeriodic(TIMER_SINK_PERIOD);
@@ -190,8 +196,8 @@ implementation {
   //*************************** Timers **************************//
   event void TimerSink.fired() {
     /* Calculate new threshold */
-    threshold = (call Random.rand16() % 40) + 30; /* Temperatures from 30 to 70 ºC */
-    dbg("nodes", "%s | Node 0 | New threshold %d.\n", sim_time_string(), TOS_NODE_ID, threshold);
+    threshold = (call Random.rand16() % 20) + 50; /* Temperatures from 50 to 70 ºC */
+    dbg("nodes", "%s | Node 0 | New threshold %d.\n", sim_time_string(), threshold);
     post sendSETUP();
   }
 
@@ -199,11 +205,15 @@ implementation {
     call Temperature.read();
   }
 
+  event void WaitingTimer.fired(){
+    post forwardSETUP();
+  }
   //*************************** Temperature Sensor **************************//
   event void Temperature.readDone(error_t err, uint16_t val) {
     if(err == SUCCESS) {
       temperature = val;
-      dbg("nodes" "%s | Node %d | Read temp = %d", sim_time_string(), TOS_NODE_ID, temperature);
+      measurements ++;
+      dbg("nodes", "%s | Node %d | Read temp = %d\n", sim_time_string(), TOS_NODE_ID, temperature);
       /* If measured temperature is higher than threshold, it must be sent to Sink Node */
       if(temperature > threshold) {
         post sendDATA();
@@ -230,6 +240,9 @@ implementation {
         data = (data_msg_t*) payload;
         dbg("radio","%s | Node 0 | Received DATA (ID = %d): sender = ID%d, origin = ID%d, temp = %d > threshold\n",
         sim_time_string(), data->msg_id, source_node, data->node_id, data->temperature);
+        dataCounter++;
+        if(data->temperature > maxTemp)
+          maxTemp = data->temperature;
       }
     }
     else {
@@ -240,11 +253,12 @@ implementation {
         sim_time_string(), TOS_NODE_ID, setup->msg_id, source_node, setup->sender_id, setup->threshold);
 
         if(setup->msg_id > counter) {
+            counter = setup->msg_id;
             threshold = setup->threshold;
             prev_node = source_node;
             setup_pkt = *setup;
 
-            post forwardSETUP();
+            call WaitingTimer.startOneShot(80+TOS_NODE_ID*15);
         }
       }
       else if (len == sizeof (data_msg_t)) {

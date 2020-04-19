@@ -5,23 +5,27 @@ print "*                                          *";
 print "********************************************";
 #!/usr/bin/python
 
-N_MOTES = 20
-DBG_CHANNELS = "default error"
-SIM_TIME = 20
+DBG_CHANNELS = ""#"error,nodes,radio"
+N_MOTES = 14
+SIM_TIME = 500
 TOPO_FILE = "linkgain.out"
 NOISE_FILE = "/usr/src/tinyos/tos/lib/tossim/noise/meyer-heavy.txt"
 #NOISE_FILE = "/usr/src/tinyos/tos/lib/tossim/noise/casino-lab.txt"
 
 from TOSSIM import *
+from tinyos.tossim.TossimApp import *
 from random import *
 import sys
+import tempfile
 
-t = Tossim([])
+nesc = NescApp("TemperatureMonitorC", "app.xml")
+variables = nesc.variables.variables()
+t = Tossim(variables)
 r = t.radio()
 
 t.randomSeed(2)
 
-for channel in DBG_CHANNELS.split():
+for channel in DBG_CHANNELS.split(","):
     t.addChannel(channel, sys.stdout)
 
 
@@ -55,12 +59,65 @@ for i in range (0, N_MOTES):
     m.createNoiseModel()
     print "Booting ", i, " at ~ ", time*1000/t.ticksPerSecond(), "ms"
 
+sys.stdout = tempfile.TemporaryFile()
+
+root = t.getNode(0)
+cnt = root.getVariable("TemperatureMonitorC.counter")
+datCnt = root.getVariable("TemperatureMonitorC.dataCounter")
+maxTemp = root.getVariable("TemperatureMonitorC.maxTemp")
+prev_counter = 0
+prev_dataCounter = 0
+totalSent = 0
+maxSent = 0
+minSent = 2000
+
+sentList = list()
+tempList = list()
+for i in range(0, N_MOTES):
+    sentList.append(t.getNode(i).getVariable("TemperatureMonitorC.sentCounter"))
+    tempList.append(t.getNode(i).getVariable("TemperatureMonitorC.measurements"))
+
+sys.stdout.close()
+sys.stdout = sys.__stdout__
+
 time = t.time()
 lastTime = -1
 while (time + SIM_TIME * t.ticksPerSecond() > t.time()):
     timeTemp = int(t.time()/(t.ticksPerSecond()*10))
     if( timeTemp > lastTime ): #stampa un segnale ogni 10 secondi... per leggere meglio il log
         lastTime = timeTemp
-        print "----------------------------------SIMULATION: ~", lastTime*10, " s ----------------------"
+        print "----------------------------------SIMULATION: ~", lastTime*10, " s ----------------------\n\n"
+
+        counter = cnt.getData()
+        dataCounter = datCnt.getData()
+        print "Sink | Sent SETUP msgs = ", counter-prev_counter, " | Received DATA msgs =", dataCounter-prev_dataCounter
+        prev_counter = counter
+        prev_dataCounter = dataCounter
+
+        sent = 0
+        for count in sentList:
+            sent += count.getData()
+        print "Exchanged msgs = ", sent - totalSent, "\n\n"
+        if(sent-totalSent > maxSent):
+            maxSent = sent-totalSent
+        if(sent- totalSent < minSent):
+            minSent = sent-totalSent
+        totalSent = sent
+
     t.runNextEvent()
-print "----------------------------------END OF SIMULATION-------------------------------------"
+
+print "----------------------------------END OF SIMULATION-------------------------------------\n\n"
+measurements = 0
+for measure in tempList:
+    measurements += measure.getData()
+
+print "----------------------------------------RESULTS-----------------------------------------"
+print "Total exchanged msgs             =", totalSent
+print "Max exchanged msgs               =", maxSent
+print "Min exchanged msgs               =", minSent
+print "Average exchanged msgs           =", totalSent*10/SIM_TIME
+print "Total SETUP msgs sent by Sink    =", counter
+print "Total DATA msgs received by Sink =", dataCounter
+print "Total temperature meassurements  =", measurements
+print "Highest temperature              =", maxTemp.getData(),"Celsius"
+print "Temperatures > threshold         =", dataCounter*100/measurements,"%"
