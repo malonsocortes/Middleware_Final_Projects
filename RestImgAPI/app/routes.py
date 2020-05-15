@@ -32,16 +32,9 @@ def index():
             flash('Your post is now live!')
             return redirect(url_for('index'))
 
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }]
+    posts = current_user.followed_posts().all()
     return render_template("index.html", title='Home Page', form=form, posts=posts)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -83,10 +76,7 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = [
-        {'author': user, 'body': 'Test post #1'},
-        {'author': user, 'body': 'Test post #2'}
-    ]
+    posts = user.posts
     return render_template('user.html', user=user, posts=posts)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -150,10 +140,10 @@ def manage():
     return render_template('manage.html', files_list=urls)
 
 @app.route('/open/<filename>')
-@login_required
 def open_file(filename):
     file_url = photos.url(filename)
-    return render_template('browser.html', file_url=file_url)
+    title = Post.query.filter_by(url=filename).first()
+    return render_template('browser.html', file_url=file_url, title=title.title)
 
 @app.route('/delete/<filename>')
 @login_required
