@@ -14,7 +14,7 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
-photos = UploadSet('photos', IMAGES)
+photos = UploadSet('photos', extensions='jpg')
 configure_uploads(app, photos)
 patch_request_class(app)  # set maximum file size, default is 16MB
 

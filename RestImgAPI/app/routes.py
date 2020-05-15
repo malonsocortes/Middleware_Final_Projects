@@ -26,7 +26,7 @@ def index():
             str_name='admin' + str(int(time.time()))
             name = hashlib.md5(str_name.encode("utf-8")).hexdigest()[:15]
             photos.save(filename, name=name + '.')
-            post = Post(title=form.post.data, url=str(filename), author=current_user) #OJO
+            post = Post(title=form.post.data, url=name + '.jpg', author=current_user) #OJO
             db.session.add(post)
             db.session.commit()
             flash('Your post is now live!')
@@ -141,17 +141,23 @@ def explore():
     return render_template('index.html', title='Explore', posts=posts)
 
 @app.route('/manage')
+@login_required
 def manage():
-    files_list = os.listdir(app.config['UPLOADED_PHOTOS_DEST'])
-    return render_template('manage.html', files_list=files_list)
+    files_user = Post.query.filter_by(author=current_user).all()
+    urls = []
+    for f in files_user:
+        urls.append(f.url)
+    return render_template('manage.html', files_list=urls)
 
 @app.route('/open/<filename>')
+@login_required
 def open_file(filename):
     file_url = photos.url(filename)
     return render_template('browser.html', file_url=file_url)
 
 @app.route('/delete/<filename>')
+@login_required
 def delete_file(filename):
     file_path = photos.path(filename)
     os.remove(file_path)
-    return redirect(url_for('manage_file'))
+    return redirect(url_for('manage'))

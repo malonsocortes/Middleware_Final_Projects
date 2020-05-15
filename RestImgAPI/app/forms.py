@@ -47,7 +47,7 @@ class EditProfileForm(FlaskForm):
                 raise ValidationError('Please use a different username.')
 class PostForm(FlaskForm):
     post = TextAreaField('Title', validators=[DataRequired(), Length(min=1, max=60)])
-    photo = FileField(validators=[FileAllowed(photos, 'Image Only!'), FileRequired('Choose a file!')])
+    photo = FileField(validators=[FileAllowed(photos, 'JPG Only!'), FileRequired('Choose a file!')])
     submit = SubmitField('Upload')
 
 # class UploadForm(FlaskForm):
