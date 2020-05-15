@@ -16,3 +16,4 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['roedrozametro@gmail.com']
     #We will  need to add these details manually
+    UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'uploads')

@@ -2,20 +2,34 @@
 
 {% block content %}
     <h1>Hi, {{ current_user.username }}!</h1>
-    {% if form %}
+    {% if form1 %}
     <form action="" method="post">
-        {{ form.hidden_tag() }}
+        {{ form1.hidden_tag() }}
         <p>
-            {{ form.post.label }}<br>
-            {{ form.post(cols=32, rows=4) }}<br>
-            {% for error in form.post.errors %}
+            {{ form1.post.label }}<br>
+            {{ form1.post(cols=32, rows=4) }}<br>
+            {% for error in form1.post.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.submit() }}</p>
+        <p>{{ form1.submit() }}</p>
+    </form>
+    {% endif %}
+    {% if form2 %}
+    <form method="POST" enctype="multipart/form-data">
+        {{ form2.hidden_tag() }}
+        {{ form2.photo(multiple="multiple")}}
+        {% for error in form2.photo.errors %}
+            <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        {{ form2.submit }}
     </form>
     {% endif %}
     {% for post in posts %}
         {% include '_post.html' %}
     {% endfor %}
+    {% if success %}
+    <br>
+    <p>Upload Success!</p>
+    {% endif %}
 {% endblock %}

@@ -1,10 +1,13 @@
 from flask import render_template, flash, redirect, url_for, request
-from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from app import app, db, photos
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, UploadForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app.models import User, Post
 from datetime import datetime
+
+import hashlib
+import time
 
 @app.before_request
 def before_request():
@@ -16,15 +19,24 @@ def before_request():
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
+    form1 = PostForm()
+    form2 = UploadForm()
+    if form1.validate_on_submit():
+        post = Post(body=form1.post.data, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash('Your post is now live!')
         return redirect(url_for('index'))
+    if form2.validate_on_submit():
+        for filename in request.files.getlist('photo'):
+            str_name='admin' + str(int(time.time()))
+            name = hashlib.md5(str_name.encode("utf-8")).hexdigest()[:15]
+            photos.save(filename, name=name + '.')
+            success = True
+    else:
+        success = False
     posts = current_user.followed_posts().all()
-    return render_template("index.html", title='Home Page', form=form, posts=posts)
+    return render_template("index.html", title='Home Page', form1=form1, form2=form2, posts=posts, success=success)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
