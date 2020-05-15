@@ -2,34 +2,28 @@
 
 {% block content %}
     <h1>Hi, {{ current_user.username }}!</h1>
-    {% if form1 %}
-    <form action="" method="post">
-        {{ form1.hidden_tag() }}
+
+    {% if form %}
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
         <p>
-            {{ form1.post.label }}<br>
-            {{ form1.post(cols=32, rows=4) }}<br>
-            {% for error in form1.post.errors %}
+            {{ form.post.label }}<br>
+            {{ form.post(cols=32, rows=1) }}<br>
+            {% for error in form.post.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form1.submit() }}</p>
-    </form>
-    {% endif %}
-    {% if form2 %}
-    <form method="POST" enctype="multipart/form-data">
-        {{ form2.hidden_tag() }}
-        {{ form2.photo(multiple="multiple")}}
-        {% for error in form2.photo.errors %}
+        {{ form.hidden_tag() }}
+        {{ form.photo(multiple="multiple")}}
+        {% for error in form.photo.errors %}
             <span style="color: red;">{{ error }}</span>
         {% endfor %}
-        {{ form2.submit }}
+        {{ form.submit }}
     </form>
     {% endif %}
+
     {% for post in posts %}
-        {% include '_post.html' %}
-    {% endfor %}
-    {% if success %}
-    <br>
-    <p>Upload Success!</p>
-    {% endif %}
+        <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
+        {% endfor %}
+
 {% endblock %}

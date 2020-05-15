@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db, photos
-from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, UploadForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm #, UploadForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app.models import User, Post
@@ -8,6 +8,7 @@ from datetime import datetime
 
 import hashlib
 import time
+import os
 
 @app.before_request
 def before_request():
@@ -19,24 +20,28 @@ def before_request():
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    form1 = PostForm()
-    form2 = UploadForm()
-    if form1.validate_on_submit():
-        post = Post(body=form1.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live!')
-        return redirect(url_for('index'))
-    if form2.validate_on_submit():
+    form = PostForm()
+    if form.validate_on_submit():
         for filename in request.files.getlist('photo'):
             str_name='admin' + str(int(time.time()))
             name = hashlib.md5(str_name.encode("utf-8")).hexdigest()[:15]
             photos.save(filename, name=name + '.')
-            success = True
-    else:
-        success = False
-    posts = current_user.followed_posts().all()
-    return render_template("index.html", title='Home Page', form1=form1, form2=form2, posts=posts, success=success)
+            post = Post(title=form.post.data, url=str(filename), author=current_user) #OJO
+            db.session.add(post)
+            db.session.commit()
+            flash('Your post is now live!')
+            return redirect(url_for('index'))
+
+    posts = [
+        {
+            'author': {'username': 'John'},
+            'body': 'Beautiful day in Portland!'
+        },
+        {
+            'author': {'username': 'Susan'},
+            'body': 'The Avengers movie was so cool!'
+        }]
+    return render_template("index.html", title='Home Page', form=form, posts=posts)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -134,3 +139,19 @@ def unfollow(username):
 def explore():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', title='Explore', posts=posts)
+
+@app.route('/manage')
+def manage():
+    files_list = os.listdir(app.config['UPLOADED_PHOTOS_DEST'])
+    return render_template('manage.html', files_list=files_list)
+
+@app.route('/open/<filename>')
+def open_file(filename):
+    file_url = photos.url(filename)
+    return render_template('browser.html', file_url=file_url)
+
+@app.route('/delete/<filename>')
+def delete_file(filename):
+    file_path = photos.path(filename)
+    os.remove(file_path)
+    return redirect(url_for('manage_file'))
