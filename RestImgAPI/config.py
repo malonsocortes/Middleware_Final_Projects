@@ -1,11 +1,13 @@
 import os
 import logging
 from logging.handlers import SMTPHandler
+from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
 
 class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -17,3 +19,4 @@ class Config(object):
     ADMINS = ['roedrozametro@gmail.com']
     #We will  need to add these details manually
     UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'uploads')
+    POSTS_PER_PAGE = 2

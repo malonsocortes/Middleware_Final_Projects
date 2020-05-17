@@ -1,0 +1,72 @@
+2020-05-16 16:53:03,311 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:52]
+2020-05-16 17:20:58,586 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:52]
+2020-05-16 17:21:29,684 ERROR: Exception on /reset_password_request [POST] [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/routes.py", line 178, in reset_password_request
+    send_password_reset_email(user)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/email.py", line 12, in send_password_reset_email
+    token = user.get_reset_password_token()
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/models.py", line 63, in get_reset_password_token
+    app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+NameError: name 'app' is not defined
+2020-05-16 17:22:11,668 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:52]
+2020-05-16 18:01:54,330 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 18:26:29,854 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 18:28:23,806 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 18:29:58,211 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 18:32:12,345 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 18:58:24,731 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 18:58:29,178 ERROR: Exception on / [GET] [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask_login/utils.py", line 271, in decorated_view
+    return current_app.login_manager.unauthorized()
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask_login/login_manager.py", line 165, in unauthorized
+    flash(self.login_message, category=self.login_message_category)
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/helpers.py", line 423, in flash
+    session["_flashes"] = flashes
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/werkzeug/local.py", line 350, in __setitem__
+    self._get_current_object()[key] = value
+  File "/home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/venv/lib/python3.8/site-packages/flask/sessions.py", line 102, in _fail
+    raise RuntimeError(
+RuntimeError: The session is unavailable because no secret key was set.  Set the secret_key on the application to something unique and secret.
+2020-05-16 19:01:25,723 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:02:16,163 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:34:42,623 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:36:59,858 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:37:34,553 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:41:42,799 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:42:43,911 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:47:45,741 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:48:11,102 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:51:04,970 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:51:27,322 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:52:31,161 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:56:01,062 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 19:59:55,173 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 20:04:00,707 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 20:06:57,682 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]
+2020-05-16 20:07:18,953 INFO: Microblog startup [in /home/jorge/Documentos/Drive/Universidad/4º/2º Cuatrimestre/Middleware/Middleware_Final_Projects/RestImgAPI/app/__init__.py:54]

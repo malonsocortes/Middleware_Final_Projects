@@ -1,29 +1,36 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %}
+{% block app_content %}
+<main role="main">
     <h1>Hi, {{ current_user.username }}!</h1>
-
     {% if form %}
-    <form method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.post.label }}<br>
-            {{ form.post(cols=32, rows=1) }}<br>
-            {% for error in form.post.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        {{ form.hidden_tag() }}
-        {{ form.photo(multiple="multiple")}}
-        {% for error in form.photo.errors %}
-            <span style="color: red;">{{ error }}</span>
-        {% endfor %}
-        {{ form.submit }}
-    </form>
+    <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    <br>
     {% endif %}
-
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <div class="row">
     {% for post in posts %}
         {% include '_post.html' %}
     {% endfor %}
-    
+    </main>
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> Newer posts
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    Older posts <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 {% endblock %}

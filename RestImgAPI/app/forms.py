@@ -46,10 +46,16 @@ class EditProfileForm(FlaskForm):
             if user is not None:
                 raise ValidationError('Please use a different username.')
 class PostForm(FlaskForm):
-    post = TextAreaField('Title', validators=[DataRequired(), Length(min=1, max=60)])
+    post = StringField('Title', validators=[DataRequired(), Length(min=1, max=50)])
     photo = FileField(validators=[FileAllowed(photos, 'JPG Only!'), FileRequired('Choose a file!')])
     submit = SubmitField('Upload')
 
-# class UploadForm(FlaskForm):
-#     photo = FileField(validators=[FileAllowed(photos, 'Image Only!'), FileRequired('Choose a file!')])
-#     submit = SubmitField('Upload')
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Request Password Reset')
