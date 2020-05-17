@@ -26,7 +26,7 @@ def index():
             str_name='admin' + str(int(time.time()))
             name = hashlib.md5(str_name.encode("utf-8")).hexdigest()[:15]
             photos.save(filename, name=name + '.')
-            post = Post(title=form.post.data, url=photos.url(name)+'.jpg', author=current_user) #OJO
+            post = Post(title=form.post.data, url=photos.url(name)+'.jpg', author=current_user, filename=name+'.jpg') #OJO
             db.session.add(post)
             db.session.commit()
             flash('Your post is now live!')
@@ -148,24 +148,35 @@ def explore():
 @app.route('/manage')
 @login_required
 def manage():
-    files_user = Post.query.filter_by(author=current_user).all()
-    urls = []
-    for f in files_user:
-        urls.append(f.url)
-    return render_template('manage.html', files_list=urls)
+    page = request.args.get('page', 1, type=int)
+    posts_user = Post.query.filter_by(author=current_user).paginate(page, app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('manage', page=posts_user.next_num) \
+        if posts_user.has_next else None
+    prev_url = url_for('manage', page=posts_user.prev_num) \
+        if posts_user.has_prev else None
+    # urls = []
+    # for f in files_user:
+    #     urls.append(f.url)
+    return render_template('manage.html', posts_user=posts_user.items, next_url=next_url, prev_url=prev_url)
 
-@app.route('/open/<filename>')
-def open_file(filename):
-    file_url = photos.url(filename)
-    print(file_url)
-    title = Post.query.filter_by(url=filename).first()
-    return render_template('browser.html', file_url=file_url, title=title.title)
+# @app.route('/open/<filename>')
+# def open_file(filename):
+#     file_url = photos.url(filename)
+#     print(file_url)
+#     title = Post.query.filter_by(url=filename).first()
+#     return render_template('browser.html', file_url=file_url, title=title.title)
 
 @app.route('/delete/<filename>')
 @login_required
 def delete_file(filename):
     file_path = photos.path(filename)
+    print(file_path)
     os.remove(file_path)
+    post = Post.query.filter_by(filename=filename).first()
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your post is now deleted!')
+    # os.remove(filename)
     return redirect(url_for('manage'))
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])

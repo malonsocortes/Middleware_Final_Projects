@@ -1,0 +1,13 @@
+<div class="col-md-4">
+  <div class="card mb-4 shadow-sm">
+    <img src="{{ post.url }}" alt="post image" class="img-thumbnail"><text x="50%" y="50%" fill="#eceeef" dy=".3em"></text>
+    <div class="card-body">
+      <p class="card-text">{{ post.title}}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group">
+          <button onclick="window.location.href = '{{ url_for('delete_file', filename=post.filename) }}';">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

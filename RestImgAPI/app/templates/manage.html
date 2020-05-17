@@ -2,10 +2,27 @@
 
 {% block app_content %}
 
-{% for photo in files_list %}
-    - {{ photo }}
-    <a href="{{ url_for('open_file', filename=photo) }}">open</a>
-    <a href="{{ url_for('delete_file', filename=photo) }}">del</a><br>
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+
+{% for post in posts_user %}
+    {% include '_post_user.html' %}
 {% endfor %}
+
+<nav class="col-md-12" aria-label="...">
+    <ul class="pager">
+        <li class="previous{% if not prev_url %} disabled{% endif %}">
+            <a href="{{ prev_url or '#' }}">
+                <span aria-hidden="true">&larr;</span> Newer posts
+            </a>
+        </li>
+        <li class="next{% if not next_url %} disabled{% endif %}">
+            <a href="{{ next_url or '#' }}">
+                Older posts <span aria-hidden="true">&rarr;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 
 {% endblock %}
