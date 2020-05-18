@@ -19,4 +19,5 @@ class Config(object):
     ADMINS = ['roedrozametro@gmail.com']
     #We will  need to add these details manually
     UPLOADED_PHOTOS_DEST = os.path.join(basedir, 'uploads')
-    POSTS_PER_PAGE = 2
+    POSTS_PER_PAGE = 9
+    USERS_PER_PAGE = 10

@@ -134,16 +134,27 @@ def unfollow(username):
     flash('You are not following {}.'.format(username))
     return redirect(url_for('user', username=username))
 
-@app.route('/explore')
+@app.route('/users')
 @login_required
-def explore():
+def users():
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
-    next_url = url_for('explore', page=posts.next_num) \
-        if posts.has_next else None
-    prev_url = url_for('explore', page=posts.prev_num) \
-        if posts.has_prev else None
-    return render_template('index.html', title='Explore', posts=posts.items, next_url=next_url, prev_url=prev_url)
+    users = User.query.order_by(User.id.desc()).paginate(page, app.config['USERS_PER_PAGE'], False)
+    next_url = url_for('users', page=users.next_num) \
+        if users.has_next else None
+    prev_url = url_for('users', page=users.prev_num) \
+        if users.has_prev else None
+    return render_template('users.html', title='Users', users=users.items, next_url=next_url, prev_url=prev_url)
+#
+# @app.route('/users')
+# @login_required
+# def explore():
+#     page = request.args.get('page', 1, type=int)
+#     posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
+#     next_url = url_for('explore', page=posts.next_num) \
+#         if posts.has_next else None
+#     prev_url = url_for('explore', page=posts.prev_num) \
+#         if posts.has_prev else None
+#     return render_template('index.html', title='Explore', posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 @app.route('/manage')
 @login_required
