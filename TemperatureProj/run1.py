@@ -1,3 +1,9 @@
+# Simulation1 with meyer-heavy noise
+# Authors:
+# Marina Alonso-Cortes
+# Saul Almazan
+# Jorge Santisteban
+
 print "********************************************";
 print "*                                          *";
 print "*             TOSSIM Script 1              *";
@@ -5,9 +11,9 @@ print "*                                          *";
 print "********************************************";
 #!/usr/bin/python
 
-DBG_CHANNELS = ""#"error,nodes,radio"
+DBG_CHANNELS = "nodes"#"error,nodes,radio"
 N_MOTES = 14
-SIM_TIME = 500
+SIM_TIME = 120
 TOPO_FILE = "linkgain.out"
 NOISE_FILE = "/usr/src/tinyos/tos/lib/tossim/noise/meyer-heavy.txt"
 #NOISE_FILE = "/usr/src/tinyos/tos/lib/tossim/noise/casino-lab.txt"
@@ -118,6 +124,6 @@ print "Min exchanged msgs               =", minSent
 print "Average exchanged msgs           =", totalSent*10/SIM_TIME
 print "Total SETUP msgs sent by Sink    =", counter
 print "Total DATA msgs received by Sink =", dataCounter
-print "Total temperature meassurements  =", measurements
+print "Total temperature measurements  =", measurements
 print "Highest temperature              =", maxTemp.getData(),"Celsius"
 print "Temperatures > threshold         =", dataCounter*100/measurements,"%"

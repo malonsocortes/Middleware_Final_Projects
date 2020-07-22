@@ -61,14 +61,13 @@ implementation {
 
       msg = (setup_msg_t *) (call Packet.getPayload(&pkt, sizeof(setup_msg_t)));
       if (msg == NULL) return;
-      msg->sender_id = TOS_NODE_ID;
       msg->msg_id = counter;
       msg->threshold = threshold;
 
       if (call AMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(setup_msg_t)) == SUCCESS) {
         busy = TRUE;
         dbg("radio", "%s | Node 0 | Sent SETUP (ID=%d): threshold = %d\n",
-        sim_time_string(), msg->msg_id, msg->threshold);
+          sim_time_string(), msg->msg_id, msg->threshold);
       }
     }
   }
@@ -83,14 +82,13 @@ implementation {
 
     msg = (setup_msg_t *) (call Packet.getPayload(&pkt, sizeof(setup_msg_t)));
     if(msg == NULL) return;
-    msg->sender_id = setup_pkt.sender_id;
     msg->msg_id = setup_pkt.msg_id;
     msg->threshold = setup_pkt.threshold;
 
     if (call AMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(setup_msg_t)) == SUCCESS) {
       busy = TRUE;
       dbg("radio", "%s | Node %d | Forwarded SETUP (ID=%d): threshold = %d\n",
-      sim_time_string(), TOS_NODE_ID, msg->msg_id, msg->threshold);
+        sim_time_string(), TOS_NODE_ID, msg->msg_id, msg->threshold);
     }
   }
 
@@ -249,8 +247,8 @@ implementation {
 
       if (len == sizeof (setup_msg_t)) {
         setup = (setup_msg_t *) payload;
-        dbg("radio", "%s | Node %d | Received SETUP (ID = %d): sender = ID%d, origin = ID%d, threshold = %d\n",
-        sim_time_string(), TOS_NODE_ID, setup->msg_id, source_node, setup->sender_id, setup->threshold);
+        dbg("radio", "%s | Node %d | Received SETUP (ID = %d): sender = ID0, origin = ID0, threshold = %d\n",
+        sim_time_string(), TOS_NODE_ID, setup->msg_id, source_node, setup->threshold);
 
         if(setup->msg_id > counter) {
             counter = setup->msg_id;
