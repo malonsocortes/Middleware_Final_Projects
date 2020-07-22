@@ -1,9 +1,9 @@
 /**
 * Definition file for the TemperatureMonitorApp
 *
-* @author Marina Alonso-Cortes
-* @author Saul Almazan
-* @author Jorge Santisteban
+* @author Saul Almazan del Pie
+* @author Marina Alonso-Cortes Lledo
+* @author Jorge Santisteban Rivas
 */
 #ifndef TEMPERATURE_MONITOR_H
 #define TEMPERATURE_MONITOR_H

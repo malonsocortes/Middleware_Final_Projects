@@ -1,8 +1,8 @@
 # Simulation1 with casino-lab noise
 # Authors:
-# Marina Alonso-Cortes
-# Saul Almazan
-# Jorge Santisteban
+# Saul Almazan del Pie
+# Marina Alonso-Cortes Lledo
+# Jorge Santisteban Rivas
 
 print "********************************************";
 print "*                                          *";

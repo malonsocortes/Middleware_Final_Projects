@@ -1,9 +1,9 @@
 /**
 * Source file for the TemperatureMonitor.
 *
-* @author Marina Alonso-Cortes
-* @author Saul Almazan
-* @author Jorge Santisteban
+* @author Saul Almazan del Pie
+* @author Marina Alonso-Cortes Lledo
+* @author Jorge Santisteban Rivas
 */
 #include "TemperatureMonitor.h"
 #include "Timer.h" /* To use TMilli */

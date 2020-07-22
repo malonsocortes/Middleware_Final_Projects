@@ -3,9 +3,9 @@
 * measuring sensor by reading a randmon number between 0 an 70, assuming
 * temperatures do not leave this range.
 *
-* @author Marina Alonso-Cortes
-* @author Saul Almazan
-* @author Jorge Santisteban
+* @author Saul Almazan del Pie
+* @author Marina Alonso-Cortes Lledo
+* @author Jorge Santisteban Rivas
 */
 generic module TemperatureSensorP() {
 

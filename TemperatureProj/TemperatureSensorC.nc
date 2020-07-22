@@ -2,9 +2,9 @@
 * Configuration file for the TemperatureSensor. It defines its wiring with
 * other modules.
 *
-* @author Marina Alonso-Cortes
-* @author Saul Almazan
-* @author Jorge Santisteban
+* @author Saul Almazan del Pie
+* @author Marina Alonso-Cortes Lledo
+* @author Jorge Santisteban Rivas
 */
 
 generic configuration TemperatureSensorC(){
